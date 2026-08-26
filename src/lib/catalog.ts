@@ -11,6 +11,12 @@ import wellness from "@/assets/wellness-lifestyle.jpg";
 
 import { CONTACT_DEFAULTS, SHIPPING_DEFAULTS, type ShippingConfig } from "./store-config";
 
+export type ProductVariant = {
+  label: string;
+  price: number;
+  mrp: number | null;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -33,6 +39,7 @@ export type Product = {
   allergens: string | null;
   additional_details: string | null;
   tags: string[];
+  variants: ProductVariant[];
   featured: boolean;
   best_seller: boolean;
   available: boolean;
@@ -98,6 +105,26 @@ export function discountPercent(product: Pick<Product, "price" | "mrp">): number
   return Math.round(((product.mrp - product.price) / product.mrp) * 100);
 }
 
+/** Normalises the editable pack-size options stored on a product. */
+export function parseVariants(value: unknown): ProductVariant[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const row = entry as Record<string, unknown>;
+      const label = String(row["label"] ?? "").trim();
+      const price = Number(row["price"]);
+      if (!label || !Number.isFinite(price) || price <= 0) return null;
+      const mrpRaw = Number(row["mrp"]);
+      return {
+        label,
+        price,
+        mrp: Number.isFinite(mrpRaw) && mrpRaw > 0 ? mrpRaw : null,
+      } satisfies ProductVariant;
+    })
+    .filter((entry): entry is ProductVariant => entry !== null);
+}
+
 export const productsQuery = queryOptions({
   queryKey: ["products"],
   queryFn: async (): Promise<Product[]> => {
@@ -111,7 +138,8 @@ export const productsQuery = queryOptions({
       ...row,
       price: Number(row.price),
       mrp: row.mrp === null ? null : Number(row.mrp),
-    })) as Product[];
+      variants: parseVariants(row.variants),
+    })) as unknown as Product[];
   },
   staleTime: 60_000,
 });
