@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Eye, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,7 +19,12 @@ export function ProductCard({
   onQuickView?: (product: Product) => void;
 }) {
   const { addItem, setDrawerOpen } = useCart();
-  const discount = discountPercent(product);
+  const variants = product.variants ?? [];
+  const [variantIndex, setVariantIndex] = useState(0);
+  const variant = variants[variantIndex] ?? null;
+  const price = variant ? variant.price : product.price;
+  const mrp = variant ? variant.mrp : product.mrp;
+  const discount = discountPercent({ price, mrp });
 
   return (
     <article
@@ -65,16 +71,35 @@ export function ProductCard({
             {product.short_description}
           </p>
         )}
-        {product.pack_size && (
-          <p className="mt-2 text-xs font-medium tracking-wide text-earth">{product.pack_size}</p>
+        {variants.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Choose pack size">
+            {variants.map((option, index) => (
+              <button
+                key={option.label}
+                type="button"
+                onClick={() => setVariantIndex(index)}
+                aria-pressed={index === variantIndex}
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-xs font-medium transition-colors",
+                  index === variantIndex
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border text-muted-foreground hover:border-primary hover:text-primary",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          product.pack_size && (
+            <p className="mt-2 text-xs font-medium tracking-wide text-earth">{product.pack_size}</p>
+          )
         )}
 
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-xl text-primary">{formatINR(product.price)}</span>
-          {product.mrp && product.mrp > product.price && (
-            <span className="text-sm text-muted-foreground line-through">
-              {formatINR(product.mrp)}
-            </span>
+          <span className="font-display text-xl text-primary">{formatINR(price)}</span>
+          {mrp && mrp > price && (
+            <span className="text-sm text-muted-foreground line-through">{formatINR(mrp)}</span>
           )}
         </div>
 
@@ -83,9 +108,11 @@ export function ProductCard({
             className="h-11 flex-1 rounded-full text-xs font-semibold tracking-wider uppercase"
             disabled={!product.available}
             onClick={() => {
-              addItem(product, 1);
+              addItem(product, 1, variant);
               setDrawerOpen(true);
-              toast.success(`${product.name} added to cart`);
+              toast.success(
+                `${product.name}${variant ? ` (${variant.label})` : ""} added to cart`,
+              );
             }}
           >
             <ShoppingBag className="mr-1.5 h-4 w-4" />
