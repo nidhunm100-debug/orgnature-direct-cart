@@ -17,6 +17,7 @@ export function emptyProduct(): ProductDraft {
     price: 0,
     mrp: null,
     pack_size: null,
+    sku: null,
     image_url: null,
     image_url_2: null,
     lifestyle_image_url: null,
