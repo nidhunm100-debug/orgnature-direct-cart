@@ -69,7 +69,7 @@ function HeroCarousel({ customHero }: { customHero: string | null }) {
   useEffect(() => {
     const timer = window.setInterval(
       () => setActive((current) => (current + 1) % slides.length),
-      5000,
+      3000,
     );
     return () => window.clearInterval(timer);
   }, [slides.length]);
