@@ -53,6 +53,73 @@ const STEPS = [
   },
 ];
 
+const HERO_SLIDES = [
+  { src: hero, alt: "Natural Indian food products from AnKura by Orgnature" },
+  { src: heroMillets, alt: "Traditional Indian millets and whole grains in wooden bowls" },
+  { src: heroSpices, alt: "Cold-pressed oils and traditional Indian spices" },
+];
+
+function HeroCarousel({ customHero }: { customHero: string | null }) {
+  const slides = customHero
+    ? [{ src: customHero, alt: HERO_SLIDES[0].alt }, ...HERO_SLIDES.slice(1)]
+    : HERO_SLIDES;
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 32 });
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setActive(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+
+    const timer = window.setInterval(() => emblaApi.scrollNext(), 5000);
+    return () => {
+      window.clearInterval(timer);
+      emblaApi.off("select", onSelect);
+    };
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+
+  return (
+    <>
+      <div ref={emblaRef} className="absolute inset-0 touch-pan-y" aria-hidden="true">
+        <div className="flex h-full">
+          {slides.map((slide, index) => (
+            <div key={index} className="relative h-full min-w-0 flex-[0_0_100%]">
+              <img
+                src={slide.src}
+                alt={slide.alt}
+                width={1600}
+                height={900}
+                loading={index === 0 ? "eager" : "lazy"}
+                draggable={false}
+                className="h-full w-full object-cover opacity-45"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            onClick={() => scrollTo(index)}
+            aria-label={`Go to slide ${index + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index === active
+                ? "w-7 bg-gold"
+                : "w-1.5 bg-forest-foreground/40 hover:bg-forest-foreground/70"
+            }`}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
 function Home() {
   const { brand, contact } = useSettings();
   const { data: products = [], isLoading } = useQuery(productsQuery);
@@ -65,13 +132,7 @@ function Home() {
   return (
     <SiteLayout>
       <section className="relative isolate overflow-hidden bg-forest text-forest-foreground">
-        <img
-          src={brand.heroImageUrl || hero}
-          alt="Natural Indian food products from AnKura by Orgnature"
-          width={1600}
-          height={900}
-          className="absolute inset-0 h-full w-full object-cover opacity-45"
-        />
+        <HeroCarousel customHero={brand.heroImageUrl} />
         <div
           className="absolute inset-0 bg-gradient-to-r from-forest/95 via-forest/80 to-forest/40"
           aria-hidden="true"
