@@ -1,8 +1,12 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import useEmblaCarousel from "embla-carousel-react";
 import { ArrowRight, Leaf, MessageCircle, PackageCheck, Sprout } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 import hero from "@/assets/hero-ankura.jpg";
+import heroMillets from "@/assets/hero-millets.jpg";
+import heroSpices from "@/assets/hero-spices.jpg";
 import story from "@/assets/brand-story.jpg";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
