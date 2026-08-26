@@ -204,6 +204,7 @@ function AdminPage() {
                     <p className="truncate font-medium">{product.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {product.category_slug} · {product.pack_size ?? "—"} ·{" "}
+                      {product.sku ? `SKU ${product.sku} · ` : ""}
                       {formatINR(product.price)}
                       {product.available ? "" : " · out of stock"}
                       {product.featured ? " · featured" : ""}
