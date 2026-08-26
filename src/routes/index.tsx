@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import useEmblaCarousel from "embla-carousel-react";
+
 import { ArrowRight, Leaf, MessageCircle, PackageCheck, Sprout } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
