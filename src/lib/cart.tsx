@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-import type { Product } from "./catalog";
+import type { Product, ProductVariant } from "./catalog";
 import { productImage } from "./catalog";
 
 export type CartItem = {
@@ -29,7 +29,7 @@ type CartContextValue = {
   hydrated: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (open: boolean) => void;
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: Product, quantity?: number, variant?: ProductVariant | null) => void;
   setQuantity: (id: string, quantity: number) => void;
   increment: (id: string) => void;
   decrement: (id: string) => void;
@@ -85,31 +85,35 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, hydrated]);
 
-  const addItem = useCallback((product: Product, quantity = 1) => {
-    setItems((current) => {
-      const existing = current.find((item) => item.id === product.id);
-      if (existing) {
-        return current.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: Math.min(MAX_QTY, item.quantity + quantity) }
-            : item,
-        );
-      }
-      return [
-        ...current,
-        {
-          id: product.id,
-          slug: product.slug,
-          name: product.name,
-          price: product.price,
-          mrp: product.mrp,
-          packSize: product.pack_size,
-          image: productImage(product),
-          quantity: Math.min(MAX_QTY, Math.max(1, quantity)),
-        },
-      ];
-    });
-  }, []);
+  const addItem = useCallback(
+    (product: Product, quantity = 1, variant: ProductVariant | null = null) => {
+      const lineId = variant ? `${product.id}::${variant.label}` : product.id;
+      setItems((current) => {
+        const existing = current.find((item) => item.id === lineId);
+        if (existing) {
+          return current.map((item) =>
+            item.id === lineId
+              ? { ...item, quantity: Math.min(MAX_QTY, item.quantity + quantity) }
+              : item,
+          );
+        }
+        return [
+          ...current,
+          {
+            id: lineId,
+            slug: product.slug,
+            name: product.name,
+            price: variant ? variant.price : product.price,
+            mrp: variant ? variant.mrp : product.mrp,
+            packSize: variant ? variant.label : product.pack_size,
+            image: productImage(product),
+            quantity: Math.min(MAX_QTY, Math.max(1, quantity)),
+          },
+        ];
+      });
+    },
+    [],
+  );
 
   const setQuantity = useCallback((id: string, quantity: number) => {
     setItems((current) =>
