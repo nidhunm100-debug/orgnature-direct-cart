@@ -802,27 +802,44 @@ function AdminPage() {
               </Field>
 
               <div className="space-y-4 sm:col-span-2">
+                <p className="text-sm text-muted-foreground">
+                  Add up to 5 images per product. The main image shows on cards; the rest appear in
+                  the product gallery.
+                </p>
                 <ImageUploadField
-                  label="Main product image"
+                  label="Image 1 (main product image)"
                   folder="products"
                   value={productDraft.image_url}
                   onChange={(value) => setProductDraft({ ...productDraft, image_url: value })}
                 />
                 <ImageUploadField
-                  label="Second image"
+                  label="Image 2"
                   folder="products"
                   value={productDraft.image_url_2}
                   onChange={(value) => setProductDraft({ ...productDraft, image_url_2: value })}
                 />
                 <ImageUploadField
-                  label="Lifestyle image"
+                  label="Image 3 (lifestyle image)"
                   folder="products"
                   value={productDraft.lifestyle_image_url}
                   onChange={(value) =>
                     setProductDraft({ ...productDraft, lifestyle_image_url: value })
                   }
                 />
+                <ImageUploadField
+                  label="Image 4"
+                  folder="products"
+                  value={productDraft.image_url_4}
+                  onChange={(value) => setProductDraft({ ...productDraft, image_url_4: value })}
+                />
+                <ImageUploadField
+                  label="Image 5"
+                  folder="products"
+                  value={productDraft.image_url_5}
+                  onChange={(value) => setProductDraft({ ...productDraft, image_url_5: value })}
+                />
               </div>
+
 
               <div className="flex flex-wrap gap-6 sm:col-span-2">
                 <label className="flex items-center gap-2.5 text-sm">
