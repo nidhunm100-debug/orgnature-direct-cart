@@ -61,7 +61,7 @@ const HERO_SLIDES = [
 
 function HeroCarousel({ customHero }: { customHero: string | null }) {
   const slides = customHero
-    ? [{ src: customHero, alt: HERO_SLIDES[0].alt }, ...HERO_SLIDES.slice(1)]
+    ? [{ src: customHero, alt: HERO_SLIDES[0]!.alt }, ...HERO_SLIDES.slice(1)]
     : HERO_SLIDES;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 32 });
