@@ -24,25 +24,32 @@ const DESCRIPTION =
   "Browse the full AnKura by Orgnature range — cold-pressed oils, millets, health mixes, herbal teas, ghee, flours, spices and snacks. Filter, sort and order on WhatsApp.";
 
 type Search = {
-  q?: string;
-  category?: string;
-  sort?: string;
-  min?: number;
-  max?: number;
-  availability?: string;
+  q?: string | undefined;
+  category?: string | undefined;
+  sort?: string | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  availability?: string | undefined;
 };
+
+function str(value: unknown): string | undefined {
+  return typeof value === "string" && value ? value.slice(0, 80) : undefined;
+}
+
+function num(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  const parsedValue = Number(value);
+  return Number.isFinite(parsedValue) ? parsedValue : undefined;
+}
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (search: Record<string, unknown>): Search => ({
-    q: typeof search.q === "string" && search.q ? search.q.slice(0, 80) : undefined,
-    category: typeof search.category === "string" && search.category ? search.category : undefined,
-    sort: typeof search.sort === "string" && search.sort ? search.sort : undefined,
-    min: Number.isFinite(Number(search.min)) && search.min !== undefined ? Number(search.min) : undefined,
-    max: Number.isFinite(Number(search.max)) && search.max !== undefined ? Number(search.max) : undefined,
-    availability:
-      typeof search.availability === "string" && search.availability
-        ? search.availability
-        : undefined,
+    q: str(search["q"]),
+    category: str(search["category"]),
+    sort: str(search["sort"]),
+    min: num(search["min"]),
+    max: num(search["max"]),
+    availability: str(search["availability"]),
   }),
   head: () => ({
     meta: [
