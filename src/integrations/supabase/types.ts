@@ -64,6 +64,8 @@ export type Database = {
           id: string
           image_url: string | null
           image_url_2: string | null
+          image_url_4: string | null
+          image_url_5: string | null
           ingredients: string | null
           lifestyle_image_url: string | null
           mrp: number | null
@@ -95,6 +97,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           image_url_2?: string | null
+          image_url_4?: string | null
+          image_url_5?: string | null
           ingredients?: string | null
           lifestyle_image_url?: string | null
           mrp?: number | null
@@ -126,6 +130,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           image_url_2?: string | null
+          image_url_4?: string | null
+          image_url_5?: string | null
           ingredients?: string | null
           lifestyle_image_url?: string | null
           mrp?: number | null

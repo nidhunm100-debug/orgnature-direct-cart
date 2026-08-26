@@ -31,6 +31,8 @@ export type Product = {
   image_url: string | null;
   image_url_2: string | null;
   lifestyle_image_url: string | null;
+  image_url_4: string | null;
+  image_url_5: string | null;
   ingredients: string | null;
   nutrition: string | null;
   benefits: string | null;
@@ -94,10 +96,14 @@ export function productImage(product: Pick<Product, "image_url" | "category_slug
 }
 
 export function productImages(product: Product): string[] {
-  const list = [product.image_url, product.image_url_2, product.lifestyle_image_url].filter(
-    (value): value is string => Boolean(value),
-  );
-  return list.length > 0 ? list : [productImage(product)];
+  const list = [
+    product.image_url,
+    product.image_url_2,
+    product.lifestyle_image_url,
+    product.image_url_4,
+    product.image_url_5,
+  ].filter((value): value is string => Boolean(value));
+  return list.length > 0 ? [...new Set(list)] : [productImage(product)];
 }
 
 export function discountPercent(product: Pick<Product, "price" | "mrp">): number | null {
