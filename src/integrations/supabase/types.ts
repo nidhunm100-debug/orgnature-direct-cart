@@ -80,6 +80,7 @@ export type Database = {
           subcategory: string | null
           tags: string[]
           updated_at: string
+          variants: Json
         }
         Insert: {
           additional_details?: string | null
@@ -110,6 +111,7 @@ export type Database = {
           subcategory?: string | null
           tags?: string[]
           updated_at?: string
+          variants?: Json
         }
         Update: {
           additional_details?: string | null
@@ -140,6 +142,7 @@ export type Database = {
           subcategory?: string | null
           tags?: string[]
           updated_at?: string
+          variants?: Json
         }
         Relationships: [
           {
