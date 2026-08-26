@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import useEmblaCarousel from "embla-carousel-react";
+
 import { ArrowRight, Leaf, MessageCircle, PackageCheck, Sprout } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -64,28 +64,25 @@ function HeroCarousel({ customHero }: { customHero: string | null }) {
     ? [{ src: customHero, alt: HERO_SLIDES[0]!.alt }, ...HERO_SLIDES.slice(1)]
     : HERO_SLIDES;
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 32 });
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => setActive(emblaApi.selectedScrollSnap());
-    emblaApi.on("select", onSelect);
-    onSelect();
+    const timer = window.setInterval(
+      () => setActive((current) => (current + 1) % slides.length),
+      5000,
+    );
+    return () => window.clearInterval(timer);
+  }, [slides.length]);
 
-    const timer = window.setInterval(() => emblaApi.scrollNext(), 5000);
-    return () => {
-      window.clearInterval(timer);
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi]);
-
-  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+  const scrollTo = useCallback((index: number) => setActive(index), []);
 
   return (
     <>
-      <div ref={emblaRef} className="absolute inset-0 touch-pan-y" aria-hidden="true">
-        <div className="flex h-full">
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div
+          className="flex h-full transition-transform duration-700 ease-out will-change-transform"
+          style={{ transform: `translate3d(-${active * 100}%, 0, 0)` }}
+        >
           {slides.map((slide, index) => (
             <div key={index} className="relative h-full min-w-0 flex-[0_0_100%]">
               <img
@@ -101,6 +98,7 @@ function HeroCarousel({ customHero }: { customHero: string | null }) {
           ))}
         </div>
       </div>
+
       <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
         {slides.map((_, index) => (
           <button
