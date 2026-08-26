@@ -112,10 +112,10 @@ export function parseVariants(value: unknown): ProductVariant[] {
     .map((entry) => {
       if (!entry || typeof entry !== "object") return null;
       const row = entry as Record<string, unknown>;
-      const label = String(row.label ?? "").trim();
-      const price = Number(row.price);
+      const label = String(row["label"] ?? "").trim();
+      const price = Number(row["price"]);
       if (!label || !Number.isFinite(price) || price <= 0) return null;
-      const mrpRaw = Number(row.mrp);
+      const mrpRaw = Number(row["mrp"]);
       return {
         label,
         price,
