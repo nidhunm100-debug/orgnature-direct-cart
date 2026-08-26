@@ -596,7 +596,90 @@ function AdminPage() {
                   className="h-11"
                 />
               </Field>
-              <Field label="Pack size">
+              <Field
+                label="Pack size options (e.g. 100g, 250g, 500g, 1kg)"
+                className="sm:col-span-2"
+              >
+                <div className="space-y-2">
+                  {(productDraft.variants ?? []).map((option, index) => (
+                    <div key={index} className="flex flex-wrap items-center gap-2">
+                      <Input
+                        aria-label={`Option ${index + 1} label`}
+                        placeholder="250 g"
+                        value={option.label}
+                        onChange={(event) => {
+                          const next = [...(productDraft.variants ?? [])];
+                          next[index] = { ...option, label: event.target.value };
+                          setProductDraft({ ...productDraft, variants: next });
+                        }}
+                        className="h-11 w-32"
+                      />
+                      <Input
+                        aria-label={`Option ${index + 1} price`}
+                        type="number"
+                        min={0}
+                        placeholder="Price ₹"
+                        value={option.price}
+                        onChange={(event) => {
+                          const next = [...(productDraft.variants ?? [])];
+                          next[index] = { ...option, price: Number(event.target.value) || 0 };
+                          setProductDraft({ ...productDraft, variants: next });
+                        }}
+                        className="h-11 w-28"
+                      />
+                      <Input
+                        aria-label={`Option ${index + 1} MRP`}
+                        type="number"
+                        min={0}
+                        placeholder="MRP ₹"
+                        value={option.mrp ?? ""}
+                        onChange={(event) => {
+                          const next = [...(productDraft.variants ?? [])];
+                          next[index] = {
+                            ...option,
+                            mrp: event.target.value === "" ? null : Number(event.target.value),
+                          };
+                          setProductDraft({ ...productDraft, variants: next });
+                        }}
+                        className="h-11 w-28"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-11 rounded-full text-xs uppercase"
+                        onClick={() =>
+                          setProductDraft({
+                            ...productDraft,
+                            variants: (productDraft.variants ?? []).filter((_, i) => i !== index),
+                          })
+                        }
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-10 rounded-full text-xs uppercase"
+                    onClick={() =>
+                      setProductDraft({
+                        ...productDraft,
+                        variants: [
+                          ...(productDraft.variants ?? []),
+                          { label: "", price: productDraft.price || 0, mrp: null },
+                        ],
+                      })
+                    }
+                  >
+                    Add pack size option
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to sell a single pack size using the price and pack size fields above.
+                  </p>
+                </div>
+              </Field>
+              <Field label="Pack size (used when no options are added)">
                 <Input
                   value={productDraft.pack_size ?? ""}
                   onChange={(event) =>
