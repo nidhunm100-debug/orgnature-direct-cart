@@ -143,9 +143,6 @@ export const productsQuery = queryOptions({
   },
   staleTime: 60_000,
 });
-  },
-  staleTime: 60_000,
-});
 
 export const categoriesQuery = queryOptions({
   queryKey: ["categories"],
