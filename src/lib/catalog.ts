@@ -39,6 +39,7 @@ export type Product = {
   allergens: string | null;
   additional_details: string | null;
   tags: string[];
+  variants: ProductVariant[];
   featured: boolean;
   best_seller: boolean;
   available: boolean;
