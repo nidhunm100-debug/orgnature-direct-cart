@@ -74,6 +74,7 @@ export async function saveProduct(draft: ProductDraft): Promise<void> {
     price: draft.price,
     mrp: draft.mrp,
     pack_size: draft.pack_size,
+    sku: draft.sku,
     image_url: draft.image_url,
     image_url_2: draft.image_url_2,
     lifestyle_image_url: draft.lifestyle_image_url,
