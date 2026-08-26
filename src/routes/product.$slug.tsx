@@ -55,6 +55,7 @@ function ProductPage() {
   const { addItem, setDrawerOpen } = useCart();
   const { shipping } = useSettings();
   const [quantity, setQuantity] = useState(1);
+  const [variantIndex, setVariantIndex] = useState(0);
   const [activeImage, setActiveImage] = useState(0);
 
   const product = products.find((item) => item.slug === slug);
@@ -93,7 +94,12 @@ function ProductPage() {
   }
 
   const images = productImages(product);
-  const discount = discountPercent(product);
+  const variants = product.variants ?? [];
+  const variant = variants[variantIndex] ?? null;
+  const price = variant ? variant.price : product.price;
+  const mrp = variant ? variant.mrp : product.mrp;
+  const packLabel = variant ? variant.label : product.pack_size;
+  const discount = discountPercent({ price, mrp });
   const related = products
     .filter((item) => item.category_slug === product.category_slug && item.id !== product.id)
     .slice(0, 4);
@@ -162,12 +168,10 @@ function ProductPage() {
             )}
 
             <div className="mt-5 flex flex-wrap items-baseline gap-3">
-              <span className="font-display text-3xl text-primary">
-                {formatINR(product.price)}
-              </span>
-              {product.mrp && product.mrp > product.price && (
+              <span className="font-display text-3xl text-primary">{formatINR(price)}</span>
+              {mrp && mrp > price && (
                 <span className="text-lg text-muted-foreground line-through">
-                  {formatINR(product.mrp)}
+                  {formatINR(mrp)}
                 </span>
               )}
               {discount !== null && (
@@ -177,8 +181,32 @@ function ProductPage() {
               )}
             </div>
 
+            {variants.length > 0 && (
+              <div className="mt-6">
+                <p className="eyebrow">Choose pack size</p>
+                <div className="mt-2.5 flex flex-wrap gap-2" role="group" aria-label="Choose pack size">
+                  {variants.map((option, index) => (
+                    <button
+                      key={option.label}
+                      type="button"
+                      onClick={() => setVariantIndex(index)}
+                      aria-pressed={index === variantIndex}
+                      className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                        index === variantIndex
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border text-foreground hover:border-primary hover:text-primary"
+                      }`}
+                    >
+                      <span>{option.label}</span>
+                      <span className="ml-2 text-xs opacity-80">{formatINR(option.price)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
-              {product.pack_size && <span>Pack size: {product.pack_size}</span>}
+              {packLabel && <span>Pack size: {packLabel}</span>}
               <span className={product.available ? "text-leaf" : "text-destructive"}>
                 {product.available ? "In stock" : "Currently out of stock"}
               </span>
@@ -190,9 +218,11 @@ function ProductPage() {
                 className="h-12 flex-1 rounded-full px-7 text-xs font-semibold tracking-wider uppercase sm:flex-none"
                 disabled={!product.available}
                 onClick={() => {
-                  addItem(product, quantity);
+                  addItem(product, quantity, variant);
                   setDrawerOpen(true);
-                  toast.success(`${product.name} added to cart`);
+                  toast.success(
+                    `${product.name}${variant ? ` (${variant.label})` : ""} added to cart`,
+                  );
                 }}
               >
                 <ShoppingBag className="mr-2 h-4 w-4" /> Add to cart
@@ -205,8 +235,8 @@ function ProductPage() {
                 className="w-full"
                 message={generateSingleProductMessage({
                   name: product.name,
-                  packSize: product.pack_size,
-                  price: product.price,
+                  packSize: packLabel,
+                  price,
                   quantity,
                 })}
               >
@@ -217,7 +247,7 @@ function ProductPage() {
             <div className="mt-5 flex items-start gap-2.5 rounded-2xl bg-cream p-4 text-sm text-muted-foreground">
               <Truck className="mt-0.5 h-4 w-4 shrink-0 text-earth" />
               <span>
-                Delivery charges: <strong className="text-foreground">{deliveryLabel(shipping, product.price * quantity)}</strong>. We
+                Delivery charges: <strong className="text-foreground">{deliveryLabel(shipping, price * quantity)}</strong>. We
                 confirm everything on WhatsApp before dispatch.
               </span>
             </div>
