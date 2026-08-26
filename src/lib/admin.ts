@@ -128,6 +128,9 @@ export async function deleteCategory(id: string): Promise<void> {
 export async function saveSetting(key: string, value: Record<string, unknown>): Promise<void> {
   const { error } = await supabase
     .from("site_settings")
-    .upsert({ key, value }, { onConflict: "key" });
+    .upsert(
+      { key, value: value as unknown as never, updated_at: new Date().toISOString() },
+      { onConflict: "key" },
+    );
   if (error) throw error;
 }
