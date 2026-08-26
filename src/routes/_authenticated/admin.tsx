@@ -688,6 +688,16 @@ function AdminPage() {
                   className="h-11"
                 />
               </Field>
+              <Field label="SKU / product code">
+                <Input
+                  value={productDraft.sku ?? ""}
+                  onChange={(event) =>
+                    setProductDraft({ ...productDraft, sku: event.target.value || null })
+                  }
+                  placeholder="ANK-COLD-OIL-500"
+                  className="h-11"
+                />
+              </Field>
               <Field label="Sort order (lower shows first)">
                 <Input
                   type="number"

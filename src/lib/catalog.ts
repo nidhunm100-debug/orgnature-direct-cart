@@ -28,6 +28,7 @@ export type Product = {
   price: number;
   mrp: number | null;
   pack_size: string | null;
+  sku: string | null;
   image_url: string | null;
   image_url_2: string | null;
   lifestyle_image_url: string | null;
@@ -201,6 +202,7 @@ export function searchProducts(products: Product[], term: string): Product[] {
       product.ingredients ?? "",
       product.product_type ?? "",
       product.pack_size ?? "",
+      product.sku ?? "",
       product.tags.join(" "),
     ]
       .join(" ")
