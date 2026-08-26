@@ -76,6 +76,7 @@ export type Database = {
           price: number
           product_type: string | null
           short_description: string | null
+          sku: string | null
           slug: string
           sort_order: number
           storage: string | null
@@ -109,6 +110,7 @@ export type Database = {
           price?: number
           product_type?: string | null
           short_description?: string | null
+          sku?: string | null
           slug: string
           sort_order?: number
           storage?: string | null
@@ -142,6 +144,7 @@ export type Database = {
           price?: number
           product_type?: string | null
           short_description?: string | null
+          sku?: string | null
           slug?: string
           sort_order?: number
           storage?: string | null

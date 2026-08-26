@@ -204,6 +204,7 @@ function AdminPage() {
                     <p className="truncate font-medium">{product.name}</p>
                     <p className="text-xs text-muted-foreground">
                       {product.category_slug} · {product.pack_size ?? "—"} ·{" "}
+                      {product.sku ? `SKU ${product.sku} · ` : ""}
                       {formatINR(product.price)}
                       {product.available ? "" : " · out of stock"}
                       {product.featured ? " · featured" : ""}
@@ -685,6 +686,16 @@ function AdminPage() {
                   onChange={(event) =>
                     setProductDraft({ ...productDraft, pack_size: event.target.value || null })
                   }
+                  className="h-11"
+                />
+              </Field>
+              <Field label="SKU / product code">
+                <Input
+                  value={productDraft.sku ?? ""}
+                  onChange={(event) =>
+                    setProductDraft({ ...productDraft, sku: event.target.value || null })
+                  }
+                  placeholder="ANK-COLD-OIL-500"
                   className="h-11"
                 />
               </Field>

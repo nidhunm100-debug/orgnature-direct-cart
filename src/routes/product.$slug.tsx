@@ -207,6 +207,7 @@ function ProductPage() {
 
             <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
               {packLabel && <span>Pack size: {packLabel}</span>}
+              {product.sku && <span>SKU: {product.sku}</span>}
               <span className={product.available ? "text-leaf" : "text-destructive"}>
                 {product.available ? "In stock" : "Currently out of stock"}
               </span>
