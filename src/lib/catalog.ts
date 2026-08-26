@@ -11,6 +11,12 @@ import wellness from "@/assets/wellness-lifestyle.jpg";
 
 import { CONTACT_DEFAULTS, SHIPPING_DEFAULTS, type ShippingConfig } from "./store-config";
 
+export type ProductVariant = {
+  label: string;
+  price: number;
+  mrp: number | null;
+};
+
 export type Product = {
   id: string;
   slug: string;
