@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-import markAsset from "@/assets/ankura-mark.png.asset.json";
+import mark from "@/assets/ankura-mark.png";
 import { useSettings } from "@/hooks/use-settings";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ export function BrandMark({ className, compact }: { className?: string; compact?
   return (
     <Link to="/" className={cn("group flex items-center gap-2.5", className)} aria-label="AnKura by Orgnature — home">
       <img
-        src={brand.logoUrl || markAsset.url}
+        src={brand.logoUrl || mark}
         alt="AnKura by Orgnature logo"
         width={52}
         height={52}
