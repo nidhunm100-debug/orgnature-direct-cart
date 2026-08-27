@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-import markAsset from "@/assets/ankura-mark.png.asset.json";
+import mark from "@/assets/ankura-mark.png";
 import { useSettings } from "@/hooks/use-settings";
 import { cn } from "@/lib/utils";
 
